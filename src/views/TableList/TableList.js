@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const baseUrl =`http://localhost:8080/api/v1/usuarios`
+const baseUrl =`http://localhost:8091/platos`
 
 export default function TableList() {
   const styles= useStyles();
@@ -46,8 +46,12 @@ export default function TableList() {
   const [modalEliminar, setModalEliminar]=useState(false);
 
   const [consolaSeleccionada, setConsolaSeleccionada]=useState({
-    codUsuario: '',
-    nomCliente:''
+    nombrePlato: '',
+    descPlato: '',
+    precioPlato: '',
+    categoriaPlato: '',
+    ingredientesPlato: '',  
+    cantidadPlato: ''
   })
   const handleChange=e=>{
     const {name, value}=e.target;
@@ -59,19 +63,25 @@ export default function TableList() {
   }
 
   
-  const peticionPut=async()=>{
-    console.log("Put");
-    await Axios.put(baseUrl+consolaSeleccionada.id, consolaSeleccionada)
+  const peticionPut=async()=>{    
+    const baseUrlPut = baseUrl+`/`+consolaSeleccionada.idPlato;
+    console.log(baseUrlPut);
+    await Axios.put(baseUrlPut+consolaSeleccionada.idPlato, consolaSeleccionada)
     .then(response=>{
       var dataNueva=data;
       dataNueva.map(consola=>{
-        if(consolaSeleccionada.id===consola.id){
-          consola.codUsuario=consolaSeleccionada.codUsuario;
-          consola.nomCliente=consolaSeleccionada.nomCliente;
+        if(consolaSeleccionada.idPlato===consola.idPlato){
+          consola.nombrePlato=consolaSeleccionada.nombrePlato;
+          consola.descPlato=consolaSeleccionada.descPlato;
+          consola.precioPlato=consolaSeleccionada.precioPlato;
+          consola.categoriaPlato=consolaSeleccionada.categoriaPlato;
+          consola.ingredientesPlato=consolaSeleccionada.ingredientesPlato;
+          consola.cantidadPlato=consolaSeleccionada.cantidadPlato;
          
         }
       })
       setData(dataNueva);
+      console.log(dataNueva);
       abrirCerrarModalEditar();
     })
   }
@@ -100,24 +110,26 @@ useEffect(()=>{
    peticionGet();
 },[])
 
-const columns = [
-  { id: "nomCliente", label: "Nombre del Plato" },
- 
-  {
-    id: "codUsuario",
-    label: "Categoria",
-    align: "right",
-    format: (value) => value.toFixed(2),
-  },
-];
+
+
 
 const bodyEditar=(
   <div className={styles.modal}>
     <h3>Editar Plato</h3>
-    <TextField name="nomCliente" className={styles.inputMaterial} variant="outlined" label="Nombre del Plato" onChange={handleChange} value={consolaSeleccionada && consolaSeleccionada.nomCliente}/>
+    <TextField name="nombrePlato" className={styles.inputMaterial} variant="outlined" label="Nombre del Plato" onChange={handleChange} value={consolaSeleccionada && consolaSeleccionada.nombrePlato}/>
     <br />
     <br />   
-    <TextField name="codUsuario" className={styles.inputMaterial} variant="outlined" label="Descripcion" onChange={handleChange} value={consolaSeleccionada && consolaSeleccionada.codUsuario}/>
+    <TextField name="descPlato" className={styles.inputMaterial} variant="outlined" label="Descripcion" onChange={handleChange} value={consolaSeleccionada && consolaSeleccionada.descPlato}/>
+    <br /><br />
+    <TextField name="precioPlato" className={styles.inputMaterial} variant="outlined" label="Precio" onChange={handleChange} value={consolaSeleccionada && consolaSeleccionada.precioPlato}/>
+    <br />
+    <br />   
+    <TextField name="ingredientesPlato" className={styles.inputMaterial} variant="outlined" label="Ingredientes" onChange={handleChange} value={consolaSeleccionada && consolaSeleccionada.ingredientesPlato}/>
+    <br /><br />
+    <TextField name="categoriaPlato" className={styles.inputMaterial} variant="outlined" label="Categoria" onChange={handleChange} value={consolaSeleccionada && consolaSeleccionada.categoriaPlato}/>
+    <br />
+    <br />   
+    <TextField name="cantidadPlato" className={styles.inputMaterial} variant="outlined" label="Cantidad" onChange={handleChange} value={consolaSeleccionada && consolaSeleccionada.cantidadPlato}/>
     <br /><br />
     <div align="right">
       <Button color="primary" onClick={()=>peticionPut()}>Editar</Button>
@@ -142,15 +154,17 @@ const bodyEditar=(
                <TableHead>
                  <TableRow>
                    <TableCell>Nombre del Plato</TableCell>
-                   <TableCell>Categoria</TableCell>
+                   <TableCell>Descripción</TableCell>
+                   <TableCell>Precio</TableCell>
                    <TableCell>Acciones</TableCell>              
                  </TableRow>
                </TableHead>
                <TableBody>
                  {data.map(console=>(
                    <TableRow key={console.id}>
-                     <TableCell>{console.nomCliente}</TableCell>
-                     <TableCell>{console.codUsuario}</TableCell>
+                     <TableCell>{console.nombrePlato}</TableCell>
+                     <TableCell>{console.descPlato}</TableCell>
+                     <TableCell>{console.precioPlato}</TableCell>
                      <TableCell>
                        <Edit onClick={() =>seleccionarConsola(console,'Editar')}/>
                        &nbsp;&nbsp;&nbsp;

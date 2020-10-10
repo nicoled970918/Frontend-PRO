@@ -14,7 +14,7 @@ import TextField from '@material-ui/core/TextField';
 
 import Axios from "axios";
 
-const baseUrl =`http://localhost:8080/api/v1/usuarios`
+const baseUrl =`http://localhost:8091/platos`
 const useStyles = makeStyles((theme) => ({
   appBar: {
     position: "relative",
@@ -54,18 +54,40 @@ const useStyles = makeStyles((theme) => ({
 export default function UserProfile() {
   const classes = useStyles();
   
-  const [codUsuario, setCodUser] = React.useState("");
-  const [nomCliente, setNomClient] = React.useState("");
+  const [nombrePlato, setNombrePlato] = React.useState("");
+  const [descPlato, setDescPlato] = React.useState("");
+  const [precioPlato, setPrecioPlato] = React.useState("");
+  const [imgPlato, setImgPlato] = React.useState("");
+  const [categoriaPlato, setCategoriaPlato] = React.useState("");
+  const [ingredientesPlato, setIngredientesPlato] = React.useState("");
+  const [statusPlato, setStatusPlato] = React.useState("ACTIVATED");
+  const [cantidadPlato, setCantidadPlato] = React.useState("");
+ // const [errorNombre, setErrorNombre] = React.useState("");
+
  
   async function sendData() {
- 
+     
+   
       var authOptions = {
         method: "POST",
         url: baseUrl,
         data: {
-          codUsuario: codUsuario,
-          nomCliente: nomCliente,   
-       
+          idPlato : 5,
+          nombrePlato: nombrePlato,
+          descPlato: descPlato,
+          precioPlato: precioPlato,
+          categoriaPlato: categoriaPlato,
+          ingredientesPlato: ingredientesPlato,
+          statusPlato: statusPlato,
+          cantidadPlato: cantidadPlato,
+          restaurante: {imgRest: 1,},/*
+              {categoriaRest: "asadero",
+              descRest: "Pollo frito",
+              idRest: 1,
+              imgRest: "vacio",
+              nombreRest: "Pio Pio", },
+          //restaurante :{},  
+       */
         },      
         json: true,
       };
@@ -74,51 +96,15 @@ export default function UserProfile() {
         .then(function(response) {
           //setLoading(false);
           console.log(response.data); 
-          console.log("1")        
+          //console.log("1")        
         })
         .catch(function(error) {
           //setLoading(false);
-          console.log("2")
+          //console.log("2")
         });
    
   }
-  /*
-  const [formulario,setFormulario] = useState({
-    codUsuario: '',
-    nomCliente: ''
-  })
-  const handleChange =  e =>{
-    const{name,value}= e.target;
-    setFormulario(prevState=>({
-      ...prevState,
-      [name]:value
-    }))
-    console.log(formulario)
-    
-  }
-
-  var formularioBody =(
-    <div>
-      <TextField name="nomCliente" id="outlined-basic" label="Nombre Plato" variant="outlined" onChange={handleChange}/>
-                  &nbsp;&nbsp;&nbsp;
-      <TextField  name="codUsuario" id="outlined-basic" label="Descripción" variant="outlined" onChange={handleChange}/>
-      <div align="right">
-      <Button onclick ={peticionPost} color="primary">Crear Plato</Button>
-      </div>
-     
-    </div>
-
-  )
-  var peticionPost= ()=>{
-    console.log("Entramos")
-    Axios.post(baseUrl, formulario)
-    .then(response=>{
-      setData(data.concat(response.data))
-      console.log(response.data)
-    })
-    .catch((error)=>{console.log(error)})
-  }
-*/
+  
   return (
     <div>
       <GridContainer>
@@ -138,7 +124,8 @@ export default function UserProfile() {
                   fullWidth
                   label="Nombre del Plato"
                   variant="outlined"
-                  onChange={(e) => setNomClient(e.target.value)}                  
+                  onChange={(e) => setNombrePlato(e.target.value)}   
+                            
                 />                              
                 </GridItem>
 
@@ -146,13 +133,59 @@ export default function UserProfile() {
                 <TextField                 
                   className={classes.item}
                   margin="normal"
-                  required
+                  required ="true"
                   fullWidth
                   label="Descripción"
                   variant="outlined"
-                  onChange={(e) => setCodUser(e.target.value)}                  
+                  onChange={(e) => setDescPlato(e.target.value)}                  
                 />                            
-                </GridItem>             
+                </GridItem>     
+                
+                <GridItem xs={12} sm={12} md={6}>    
+                <TextField                 
+                  className={classes.item}
+                  margin="normal"
+                  required
+                  fullWidth
+                  label="Precio"
+                  variant="outlined"
+                  onChange={(e) => setPrecioPlato(e.target.value)}                  
+                />                            
+                </GridItem>  
+                
+                <GridItem xs={12} sm={12} md={6}>    
+                <TextField                 
+                  className={classes.item}
+                  margin="normal"
+                  required
+                  fullWidth
+                  label="Categoria"
+                  variant="outlined"
+                  onChange={(e) => setCategoriaPlato(e.target.value)}                  
+                />                            
+                </GridItem>  
+                <GridItem xs={12} sm={12} md={6}>    
+                <TextField                 
+                  className={classes.item}
+                  margin="normal"
+                  required
+                  fullWidth
+                  label="Ingredientes"
+                  variant="outlined"
+                  onChange={(e) => setIngredientesPlato(e.target.value)}                  
+                />                            
+                </GridItem>
+                <GridItem xs={12} sm={12} md={6}>    
+                <TextField                 
+                  className={classes.item}
+                  margin="normal"
+                  required
+                  fullWidth
+                  label="Platos Producidos"
+                  variant="outlined"
+                  onChange={(e) => setCantidadPlato(e.target.value)}                  
+                />                            
+                </GridItem>                  
               </GridContainer>              
             </CardBody>           
           </Card>
