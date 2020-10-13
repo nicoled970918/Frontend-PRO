@@ -10,7 +10,8 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 
 import TextField from '@material-ui/core/TextField';
-
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 
 import Axios from "axios";
 
@@ -50,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-
+toast.configure()
 export default function UserProfile() {
   const classes = useStyles();
   
@@ -62,17 +63,53 @@ export default function UserProfile() {
   const [ingredientesPlato, setIngredientesPlato] = React.useState("");
   const [statusPlato, setStatusPlato] = React.useState("ACTIVATED");
   const [cantidadPlato, setCantidadPlato] = React.useState("");
+  const [validarExistenciaPlato, setValidarExistenciaPlato] = React.useState();
  // const [errorNombre, setErrorNombre] = React.useState("");
 
- 
-  async function sendData() {
-     
+ async function validarExistencia(){
+  let response;
+  var authOptions = {
+    method: "GET",
+    url: `http://localhost:8091/platos/buscar-por-nombre/`+nombrePlato,
+    data: {      
+      nombrePlato: nombrePlato,   
+    },      
+    json: true,
+  };
+  //console.log(authOptions);
+  await Axios(authOptions)
+    .then(function(response) {
+      //setLoading(false); 
+      setValidarExistenciaPlato(response.data[0].nombrePlato);
+      //console.log(validarExistenciaPlato); 
+      if(response.data[0].nombrePlato == nombrePlato) {
+        setValidarExistenciaPlato("Existe");      
+      
+      }
+            
+    })
+    .catch(function(error) {
+      //setLoading(false);
+      //console.log("2")
+      setValidarExistenciaPlato("No existe");
+     // console.log("No existee");
    
+    });
+ }
+
+  async function sendData() {
+    
+  if(validarExistenciaPlato == "Existe"){
+    toast.error('El plato ya existe');
+    
+  
+  }else{
+    let response;
       var authOptions = {
         method: "POST",
         url: baseUrl,
         data: {
-          idPlato : 5,
+         
           nombrePlato: nombrePlato,
           descPlato: descPlato,
           precioPlato: precioPlato,
@@ -80,14 +117,7 @@ export default function UserProfile() {
           ingredientesPlato: ingredientesPlato,
           statusPlato: statusPlato,
           cantidadPlato: cantidadPlato,
-          restaurante: {imgRest: 1,},/*
-              {categoriaRest: "asadero",
-              descRest: "Pollo frito",
-              idRest: 1,
-              imgRest: "vacio",
-              nombreRest: "Pio Pio", },
-          //restaurante :{},  
-       */
+         
         },      
         json: true,
       };
@@ -95,13 +125,18 @@ export default function UserProfile() {
       await Axios(authOptions)
         .then(function(response) {
           //setLoading(false);
-          console.log(response.data); 
+          
+          toast.success('Se agrego el plato');
           //console.log("1")        
         })
         .catch(function(error) {
           //setLoading(false);
-          //console.log("2")
+          console.log(error)
+           
         });
+    
+  }
+    
    
   }
   
@@ -125,6 +160,7 @@ export default function UserProfile() {
                   label="Nombre del Plato"
                   variant="outlined"
                   onChange={(e) => setNombrePlato(e.target.value)}   
+                  onBlur={validarExistencia}
                             
                 />                              
                 </GridItem>

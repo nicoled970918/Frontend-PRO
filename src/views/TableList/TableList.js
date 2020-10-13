@@ -14,6 +14,9 @@ import { useEffect, useState } from "react";
 import Axios from "axios";
 import{TableContainer, Table, TableHead, TableBody, TableRow, TableCell, Modal, Button, TextField}from '@material-ui/core';
 import{Edit,Delete} from '@material-ui/icons';
+
+import {toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 const useStyles = makeStyles((theme) => ({
   modal: {
     position: 'absolute',
@@ -64,8 +67,42 @@ export default function TableList() {
 
   
   const peticionPut=async()=>{    
-    const baseUrlPut = baseUrl+`/`+consolaSeleccionada.idPlato;
-    console.log(baseUrlPut);
+    const baseUrlPut = `http://localhost:8091/platos/actualizar-plato`+`/`+consolaSeleccionada.idPlato;
+    
+    let response;
+    var dataNueva=data;
+    dataNueva.map(consola=>{
+      if(consolaSeleccionada.idPlato===consola.idPlato){
+        consola.nombrePlato=consolaSeleccionada.nombrePlato;
+        consola.descPlato=consolaSeleccionada.descPlato;
+        consola.precioPlato=consolaSeleccionada.precioPlato;
+        consola.categoriaPlato=consolaSeleccionada.categoriaPlato;
+        consola.ingredientesPlato=consolaSeleccionada.ingredientesPlato;
+        consola.cantidadPlato=consolaSeleccionada.cantidadPlato;         
+      }
+    })
+    var authOptions = {
+      method: "PUT",
+      url: baseUrlPut,
+      data: consolaSeleccionada,      
+      json: true,
+    };
+    //console.log(consolaSeleccionada);
+    //console.log(dataNueva);
+    console.log(authOptions)
+    await Axios(authOptions)
+      .then(function(response) {
+        //setLoading(false);
+   
+        toast.success('Se actualizó el plato');
+        //console.log("1")        
+      })
+      .catch(function(error) {
+        //setLoading(false);
+        //console.log("2")
+         
+      });
+    /*
     await Axios.put(baseUrlPut+consolaSeleccionada.idPlato, consolaSeleccionada)
     .then(response=>{
       var dataNueva=data;
@@ -76,14 +113,13 @@ export default function TableList() {
           consola.precioPlato=consolaSeleccionada.precioPlato;
           consola.categoriaPlato=consolaSeleccionada.categoriaPlato;
           consola.ingredientesPlato=consolaSeleccionada.ingredientesPlato;
-          consola.cantidadPlato=consolaSeleccionada.cantidadPlato;
-         
+          consola.cantidadPlato=consolaSeleccionada.cantidadPlato;         
         }
       })
       setData(dataNueva);
       console.log(dataNueva);
       abrirCerrarModalEditar();
-    })
+    })*/
   }
 
   const abrirCerrarModalEditar=()=>{
@@ -161,7 +197,9 @@ const bodyEditar=(
                </TableHead>
                <TableBody>
                  {data.map(console=>(
-                   <TableRow key={console.id}>
+                   <TableRow 
+                   hover                   
+                   key={console.idPlato}>
                      <TableCell>{console.nombrePlato}</TableCell>
                      <TableCell>{console.descPlato}</TableCell>
                      <TableCell>{console.precioPlato}</TableCell>
